@@ -1,7 +1,34 @@
 import streamlit as st
-import streamlit.components.v1 as components
+import os
 import random
 import time
+
+def inject_ga():
+    GA_ID = "G-1NSXSB68RH"
+    GA_JS = f"""
+<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+  gtag('config', '{GA_ID}');
+</script>
+"""
+    # Streamlitのパッケージ内にある本物の index.html を探し出して直接書き換える
+    index_path = os.path.join(os.path.dirname(st.__file__), "static", "index.html")
+    
+    try:
+        with open(index_path, "r", encoding="utf-8") as f:
+            html = f.read()
+            
+        if GA_ID not in html:
+            # <head>タグの終了直前にGA4のコードをねじ込む
+            new_html = html.replace("</head>", f"{GA_JS}\n</head>")
+            with open(index_path, "w", encoding="utf-8") as f:
+                f.write(new_html)
+    except Exception:
+        # 権限エラー等で書き込めない環境でもアプリを止めない
+        pass
 
 # --- ページ設定 (モバイルUXの要) ---
 st.set_page_config(
@@ -11,17 +38,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# GA4 トラッキングコードの埋め込み
-ga_code = """
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1NSXSB68RH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-1NSXSB68RH');
-</script>
-"""
-components.html(ga_code, height=0, width=0)
+# GA4の注入
+inject_ga()
 
 # --- カスタムCSS (スマホ最適化 & 映え) ---
 st.markdown("""
