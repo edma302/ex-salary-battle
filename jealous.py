@@ -1,34 +1,39 @@
 import streamlit as st
-import os
+import streamlit.components.v1 as components
 import random
 import time
 
 def inject_ga():
     GA_ID = "G-1NSXSB68RH"
-    GA_JS = f"""
-<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){{dataLayer.push(arguments);}}
-  gtag('js', new Date());
-  gtag('config', '{GA_ID}');
-</script>
-"""
-    # Streamlitのパッケージ内にある本物の index.html を探し出して直接書き換える
-    index_path = os.path.join(os.path.dirname(st.__file__), "static", "index.html")
-    
-    try:
-        with open(index_path, "r", encoding="utf-8") as f:
-            html = f.read()
+    ga_js = f"""
+    <script>
+        // 親ウィンドウ（Streamlitのメインフレーム）の存在確認
+        if (window.parent && window.parent.document) {{
+            var parentHead = window.parent.document.head;
             
-        if GA_ID not in html:
-            # <head>タグの終了直前にGA4のコードをねじ込む
-            new_html = html.replace("</head>", f"{GA_JS}\n</head>")
-            with open(index_path, "w", encoding="utf-8") as f:
-                f.write(new_html)
-    except Exception:
-        # 権限エラー等で書き込めない環境でもアプリを止めない
-        pass
+            // 既にGA4が注入されているかチェック（二重発火防止）
+            if (!parentHead.querySelector('script[src*="{GA_ID}"]')) {{
+                // 1. GA4の外部スクリプトを注入
+                var script1 = window.parent.document.createElement('script');
+                script1.async = true;
+                script1.src = 'https://www.googletagmanager.com/gtag/js?id={GA_ID}';
+                parentHead.appendChild(script1);
+
+                // 2. GA4の初期化スクリプトを注入
+                var script2 = window.parent.document.createElement('script');
+                script2.innerHTML = `
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){{window.dataLayer.push(arguments);}}
+                    gtag('js', new Date());
+                    gtag('config', '{GA_ID}');
+                `;
+                parentHead.appendChild(script2);
+            }}
+        }}
+    </script>
+    """
+    # 画面に影響を与えない透明なiframeとして展開し、JSを実行させる
+    components.html(ga_js, width=0, height=0)
 
 # --- ページ設定 (モバイルUXの要) ---
 st.set_page_config(
