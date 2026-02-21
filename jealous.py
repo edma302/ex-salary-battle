@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import random
 import time
 
@@ -9,6 +10,18 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed"
 )
+
+# GA4 トラッキングコードの埋め込み
+ga_code = """
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1NSXSB68RH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1NSXSB68RH');
+</script>
+"""
+components.html(ga_code, height=0, width=0)
 
 # --- カスタムCSS (スマホ最適化 & 映え) ---
 st.markdown("""
