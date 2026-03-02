@@ -306,17 +306,22 @@ if st.session_state.result_ready:
     </a>
     """, unsafe_allow_html=True)
 
-    # --- アフィリエイト導線 (CTR最大化) ---
+    # --- noteメディア誘導（教育型ファネル） ---
     st.divider()
-    st.subheader("🚀 未来をアップデートする")
+    st.subheader("📈 戦略的次手：あなたの『市場価値』を再定義する")
+    
+    # noteの各記事URL（ご自身のnote記事URLに差し替えてください）
+    NOTE_ARTICLE_1 = "https://note.com/kei_career/n/n36eff38919c6" # 業界構造の真実
+    NOTE_ARTICLE_2 = "https://note.com/kei_career/n/n0874461dac3d" # アービトラージ戦略
+    NOTE_ARTICLE_3 = "https://note.com/kei_career/n/n1b3340b53c0f" # トップダウン人生設計
     
     if status_key == "lose" or status_key == "draw":
-        st.warning("このまま負け組で終わりますか？ 逆転の一手を。")
-        st.link_button("🔥 元恋人を見返す『年収100万UP転職』", "https://example.com/career", use_container_width=True)
-        st.link_button("💎 格上と出会える『審査制・婚活アプリ』", "https://example.com/konkatsu", use_container_width=True)
+        st.warning("このまま『劣後』を受け入れますか？ 数字で人生を殴り返すための戦略を公開しています。")
+        st.link_button("🗡️ 【敗者の逆転劇】元恋人を見返す『アービトラージ戦略』を読む", NOTE_ARTICLE_2, use_container_width=True)
+        st.link_button("🔍 そもそもなぜ年収差がついたのか？ 労働市場の残酷な真実", NOTE_ARTICLE_1, use_container_width=True)
     else:
-        st.success("勝者の余裕。さらなる高みへ。")
-        st.link_button("✨ あなたに相応しい『極上ハイクラス婚活』", "https://example.com/premium", use_container_width=True)
-        st.link_button("📈 資産運用で圧倒的な差を広げる", "https://example.com/invest", use_container_width=True)
+        st.success("勝者の余裕。現在のバリュエーションを維持し、さらに拡大させる『資本家側』の思考法へ。")
+        st.link_button("💎 【上位10%の生存戦略】人生の損益分岐点から逆算するトップダウン設計論", NOTE_ARTICLE_3, use_container_width=True)
+        st.link_button("📊 『努力』を捨てて『ポジション』を取る。市場価値最大化の全手法", NOTE_ARTICLE_1, use_container_width=True)
 
-    st.caption("※判定結果は統計データに基づいた推定であり、実在の人物を特定するものではありません。")
+    st.caption("※解説の詳細は、キャリア戦略家Kのnoteにて公開中。")
